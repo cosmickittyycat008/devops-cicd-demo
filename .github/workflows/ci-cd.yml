@@ -50,42 +50,4 @@ jobs:
 
           echo "Health check passed!"
           docker compose down
-ame: DevOps CI/CD Pipeline
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  build-test-deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Run automated tests
-        run: python -m pytest -v
-
-      - name: Build Docker image
-        run: docker build -t devops-cicd-demo:latest .
-
-      - name: Deploy using Docker Compose
-        run: |
-          docker compose up -d --build
-          docker compose ps
-          curl --retry 10 --retry-connrefused --retry-delay 2 \
-            --fail http://localhost:5000/health
-          docker compose down
